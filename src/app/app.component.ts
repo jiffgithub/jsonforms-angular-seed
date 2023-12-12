@@ -7,13 +7,10 @@ import { LangComponent } from './lang.control';
 import uischemaAsset from '../assets/uischema.json';
 import schemaAsset from '../assets/schema.json';
 import dataAsset from './data';
-import { parsePhoneNumber } from 'libphonenumber-js';
 import { DateAdapter } from '@angular/material/core';
-
-const departmentTester: Tester = and(
-  schemaTypeIs('string'),
-  scopeEndsWith('department')
-);
+import {HttpClient} from "@angular/common/http";
+import { forkJoin } from 'rxjs';
+import Ajv from 'ajv';
 
 @Component({
   selector: 'app-root',
@@ -21,50 +18,49 @@ const departmentTester: Tester = and(
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  renderers = [
-    ...angularMaterialRenderers,
-    { tester: rankWith(5, departmentTester), renderer: CustomAutocompleteControlRenderer },
-    {
-      renderer: DataDisplayComponent,
-      tester: rankWith(
-        6,
-        and(
-          isControl,
-          scopeEndsWith('___data')
-        )
-      )
-    },
-    {
-      renderer: LangComponent,
-      tester: rankWith(
-        6,
-        and(
-          isControl,
-          optionIs('lang', true)
-        )
-      )
-    },
-  ];
-  uischema = uischemaAsset;
-  schema = schemaAsset;
-  data = dataAsset;
+  renderers = angularMaterialRenderers;
+  uischema:object;
+  schema:object;
+  data = {};
   i18n = {locale: 'de-DE'}
-  dateAdapter;
-  ajv = createAjv({
-    schemaId: 'id',
-    allErrors: true
-  });
-  constructor(dateAdapter: DateAdapter<Date>) {
-    this.ajv.addFormat('time', '^([0-1][0-9]|2[0-3]):[0-5][0-9]$');
+  dateAdapter: DateAdapter<Date>;
+  ajv:Ajv;
+  
+  constructor(dateAdapter: DateAdapter<Date>, http:HttpClient) {
+
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    var url = 'https://localhost:7055'; 
+
+    forkJoin([http.get<SchemaDto>(`${url}/form-schema?productSpecificationId=1886&groupingCode=App&questionStageCode=Dependants&communicationId=5120`, options)]).subscribe(result => {
+      
+      this.schema = result[0].data
+      this.uischema =  result[0].layout
+    });
+
+    this.ajv = createAjv({
+      schemaId: 'id',
+      allErrors: true,
+      validateSchema:false
+    });
     this.dateAdapter = dateAdapter;
     dateAdapter.setLocale(this.i18n.locale);
-    this.ajv.addFormat('tel', maybePhoneNumber => {
-      try {
-        parsePhoneNumber(maybePhoneNumber, 'DE');
-        return true;
-      } catch (_) {
-        return false;
-      }
-    });
+    
   }
+
+
+  onSubmit() {
+    // Handle form submission logic here
+    console.log('Form submitted:',  this.data);
+  }
+}
+
+class SchemaDto
+{
+  data:object;
+  layout:object;  
 }

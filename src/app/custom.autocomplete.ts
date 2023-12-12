@@ -10,6 +10,7 @@ import {Component} from '@angular/core';
 const words: string[] = randomWords(1000);
 
 const fetchSuggestions = (input: string): Observable<string[]> => {
+  debugger;
   const filtered: string[] = words.filter(word => word.startsWith(input));
   return of(filtered).pipe(delay(1000));
 };
@@ -47,6 +48,7 @@ export class CustomAutocompleteControlRenderer extends AutocompleteControlRender
 
   ngOnInit() {
     super.ngOnInit();
+    debugger;
     this.form.valueChanges
       .pipe(
         debounceTime(300),
