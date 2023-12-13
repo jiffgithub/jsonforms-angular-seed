@@ -11,6 +11,16 @@ import { DateAdapter } from '@angular/material/core';
 import {HttpClient} from "@angular/common/http";
 import { forkJoin } from 'rxjs';
 import Ajv from 'ajv';
+import * as randomWords from 'random-words';
+import {debounceTime, finalize, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
+import {delay} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {AutocompleteControlRenderer} from '@jsonforms/angular-material';
+import {Observable} from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+
 
 @Component({
   selector: 'app-root',
@@ -19,8 +29,8 @@ import Ajv from 'ajv';
 })
 export class AppComponent {
   renderers = angularMaterialRenderers;
-  uischema:object;
-  schema:object;
+  uischema:{};
+  schema:{};
   data = {};
   i18n = {locale: 'de-DE'}
   dateAdapter: DateAdapter<Date>;
@@ -36,7 +46,9 @@ export class AppComponent {
 
     var url = 'https://localhost:7055'; 
 
-    forkJoin([http.get<SchemaDto>(`${url}/form-schema?productSpecificationId=1886&groupingCode=App&questionStageCode=Dependants&communicationId=5120`, options)]).subscribe(result => {
+    //productSpecificationId=1886&groupingCode=App
+     //productSpecificationId=1986&groupingCode=App
+    forkJoin([http.get<SchemaDto>(`${url}/form-schema?productSpecificationId=1886&groupingCode=App`, options)]).subscribe(result => {
       
       this.schema = result[0].data
       this.uischema =  result[0].layout
@@ -51,8 +63,6 @@ export class AppComponent {
     dateAdapter.setLocale(this.i18n.locale);
     
   }
-
-
   onSubmit() {
     // Handle form submission logic here
     console.log('Form submitted:',  this.data);

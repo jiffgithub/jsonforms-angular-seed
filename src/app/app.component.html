@@ -1,15 +1,42 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Product specification
-  </h1>
-  </div>
-<jsonforms
-    [(data)]="data"
-    [schema]="schema"
-    [uischema]="uischema"
-    [renderers]="renderers"
-    [i18n]="i18n"
-    [ajv]="ajv"></jsonforms>
 
- <button mat-raised-button color="primary" (click)="onSubmit()">Submit</button>
+<mat-card style="margin-top:50px;">
+  <mat-card-header>
+    <mat-card-title>Form</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <jsonforms [(data)]="data" [schema]="schema" [uischema]="uischema" [renderers]="renderers" [i18n]="i18n"
+      [ajv]="ajv">
+    </jsonforms>
+  </mat-card-content>
+</mat-card>
+
+<mat-card style="margin-top:50px;">
+  <mat-card-header>
+    <mat-card-title>Schemas</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="Data">
+        <mat-card>
+          <mat-card-content *ngIf="(data | json) != ({} | json)">
+            <pre *ngIf="(data | json) != ({} | json)">{{data | json}}</pre>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="UI Schema">
+        <mat-card>
+          <mat-card-content *ngIf="(uischema | json) != ({} | json)">
+            <pre *ngIf="(uischema | json) != ({} | json)">{{uischema | json}}</pre>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Data Schema">
+        <mat-card>
+          <mat-card-content *ngIf="(schema | json) != ({} | json)">
+            <pre *ngIf="(schema | json) != ({} | json)">{{schema | json}}</pre>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

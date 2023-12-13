@@ -10,6 +10,8 @@ import { AppComponent } from './app.component';
 import { CustomAutocompleteControlRenderer } from './custom.autocomplete';
 import { DataDisplayComponent } from './data.control';
 import { LangComponent } from './lang.control';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -26,8 +28,11 @@ import { LangComponent } from './lang.control';
     JsonFormsAngularMaterialModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    MatCardModule,
+    MatTabsModule,
     HttpClientModule
   ],
+  exports: [MatCardModule],
   schemas: [],
   entryComponents: [CustomAutocompleteControlRenderer, LangComponent, DataDisplayComponent],
   bootstrap: [AppComponent]
