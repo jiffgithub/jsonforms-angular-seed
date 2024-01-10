@@ -43,7 +43,7 @@ export class AppComponent {
         'Content-Type': 'application/json',
       }
     };
-
+    
     var url = 'https://localhost:7055'; 
 
     //productSpecificationId=1886&groupingCode=App
